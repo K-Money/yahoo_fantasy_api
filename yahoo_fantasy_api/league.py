@@ -213,7 +213,7 @@ class League:
                                "{}, but current week is {}.".format(
                                    week, self.current_week()))
 
-    def free_agents(self, position):
+    def free_agents(self, position, status):
         """Return the free agents for the given position
 
         :param position: All free agents must be able to play this position.
@@ -221,11 +221,14 @@ class League:
              also specify the position type (e.g. 'B' for all batters and 'P'
              for all pitchers).
         :type position: str
+        :param status: A filter to limit the player status.  Available values
+        are: 'A' - all available; 'FA' - free agents; 'W' - waivers, 'T' -
+        taken players, 'K' - keepers
         :return: Free agents found. Particulars about each free agent will be
              returned.
         :rtype: List(Dict)
 
-        >>> fa_CF = lg.free_agents('CF')
+        >>> fa_CF = lg.free_agents('CF','FA')
         >>> len(fa_CF)
         60
         >>> fa_CF[0]
@@ -235,10 +238,10 @@ class League:
          'eligible_positions': ['CF', 'RF', 'Util']}
         """
         if position not in self.free_agent_cache:
-            self._cache_free_agents(position)
+            self._cache_free_agents(position, status)
         return self.free_agent_cache[position]
 
-    def _cache_free_agents(self, position):
+    def _cache_free_agents(self, position, status):
         # The Yahoo! API we use doles out players 25 per page.  We need to make
         # successive calls to gather all of the players.  We stop when we fetch
         # less then 25.
@@ -246,7 +249,7 @@ class League:
         self.free_agent_cache[position] = []
         plyrIndex = 0
         while plyrIndex % PLAYERS_PER_PAGE == 0:
-            j = self.yhandler.get_players_raw(self.league_id, plyrIndex, 'FA',
+            j = self.yhandler.get_players_raw(self.league_id, plyrIndex, status,
                                               position=position)
             (num_plyrs_on_pg, fa_on_pg) = self._free_agents_from_page(j)
             self.free_agent_cache[position] += fa_on_pg
