@@ -241,8 +241,10 @@ class League:
             #self._cache_free_agents(position, status)
 
         nomen = "{}_{}".format(position, status)
+        print ("Checkpoint 1, nomen:".format(nomen))
         if nomen not in self.free_agent_cache:
             self._cache_free_agents(position, status)
+            print ("Checkpoint 2, nomen:".format(nomen))
         #self._cache_free_agents(position, status)
         return self.free_agent_cache[nomen]
 
@@ -252,6 +254,7 @@ class League:
         # less then 25.
         PLAYERS_PER_PAGE = 25
         nomen = "{}_{}".format(position, status)
+        print ("Checkpoint 3, nomen:".format(nomen))
         #self.free_agent_cache[position] = []
         self.free_agent_cache[nomen] = []
         plyrIndex = 0
