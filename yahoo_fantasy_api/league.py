@@ -237,16 +237,23 @@ class League:
          'position_type': 'B',
          'eligible_positions': ['CF', 'RF', 'Util']}
         """
-        if position not in self.free_agent_cache:
+        #if position not in self.free_agent_cache:
+            #self._cache_free_agents(position, status)
+
+        nomen = "{}_{}".format(position, status)
+        if nomen not in self.free_agent_cache:
             self._cache_free_agents(position, status)
-        return self.free_agent_cache[position]
+        #self._cache_free_agents(position, status)
+        return self.free_agent_cache[nomen]
 
     def _cache_free_agents(self, position, status):
         # The Yahoo! API we use doles out players 25 per page.  We need to make
         # successive calls to gather all of the players.  We stop when we fetch
         # less then 25.
         PLAYERS_PER_PAGE = 25
-        self.free_agent_cache[position] = []
+        nomen = "{}_{}".format(position, status)
+        #self.free_agent_cache[position] = []
+        self.free_agent_cache[nomen] = []
         plyrIndex = 0
         while plyrIndex % PLAYERS_PER_PAGE == 0:
             j = self.yhandler.get_players_raw(self.league_id, plyrIndex, status,
